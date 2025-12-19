@@ -3,84 +3,87 @@ import "./Sidebar.css";
 import { assets } from "../../assets/assets";
 import { Context } from "../../context/Context";
 import { Tooltip } from "react-tooltip";
+
 const Sidebar = () => {
-  const [extended, setExtended] = React.useState(true);
-  const { onSent, prevPrompts, setRecentPrompt, newChat } =
-    React.useContext(Context);
+  const [extended, setExtended] = React.useState(false);
+
+  const {
+    onSent,
+    prevPrompts,
+    setRecentPrompt,
+    newChat,
+  } = React.useContext(Context);
+
   const loadPrompt = async (prompt) => {
     setRecentPrompt(prompt);
     await onSent(prompt);
   };
-  let sidebarWidth;
-  if (!extended) {
-    sidebarWidth = "20%";
-  } else {
-    sidebarWidth = "70px";
-  }
+
+  const sidebarWidth = extended ? "260px" : "70px";
+
   return (
     <div className="sidebar" style={{ width: sidebarWidth }}>
+      {/* TOP */}
       <div className="top">
+        {/* MENU */}
         <img
-          onClick={() => {
-            setExtended(!extended);
-          }}
           className="menu"
           src={assets.menu_icon}
-          alt=""
+          alt="Menu"
+          onClick={() => setExtended(!extended)}
           data-tooltip-id="menu"
-          data-tooltip-content={extended ? "Expand" : "Collapse"}
+          data-tooltip-content={extended ? "Collapse" : "Expand"}
         />
-        <Tooltip
-          id="menu"
-          place={"bottom"}
-          style={{ padding: "5px", fontSize: "12px", color: "#f0f4f9" }}
-        />
+        <Tooltip id="menu" place="right" />
+
+        {/* NEW CHAT */}
         <div
-          onClick={() => newChat()}
           className="new-chat"
+          onClick={newChat}
           data-tooltip-id="new-chat"
           data-tooltip-content="New Chat"
         >
           <img src={assets.plus_icon} alt="" />
-          <Tooltip
-            id="new-chat"
-            place={"bottom"}
-            style={{ padding: "5px", fontSize: "12px", color: "#f0f4f9" }}
-          />
-          {!extended && <p>New Chat</p>}
+          {extended && <p>New Chat</p>}
         </div>
-        {!extended && (
+        <Tooltip id="new-chat" place="right" />
+
+        {/* RECENT */}
+        {extended && (
           <div className="recent">
             <p className="recent-title">Recent</p>
-            {prevPrompts.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  onClick={() => loadPrompt(item)}
-                  className="recent-entry"
-                >
-                  <img src={assets.message_icon} alt="" />
-                  <p>
-                    {item.slice(0, 24)} {item.length > 24 && "..."}
-                  </p>
-                </div>
-              );
-            })}
+
+            {prevPrompts?.map((item, index) => (
+              <div
+                key={index}
+                className="recent-entry"
+                onClick={() => loadPrompt(item)}
+              >
+                <img src={assets.message_icon} alt="" />
+                <p>
+                  {item?.length > 22 ? item.slice(0, 22) + "…" : item}
+                </p>
+              </div>
+            ))}
           </div>
         )}
       </div>
+
+      {/* BOTTOM */}
       <div className="bottom">
         <div className="bottom-item recent-entry">
           <img src={assets.question_icon} alt="" />
-          {!extended && <p>Help</p>}
+          {extended && <p>Help</p>}
         </div>
+
         <div className="bottom-item recent-entry">
           <img src={assets.history_icon} alt="" />
-          {!extended && <p>Activity</p>}
+          {extended && <p>Activity</p>}
         </div>
+
         <div className="bottom-item recent-entry">
           <img src={assets.setting_icon} alt="" />
-          {!extended && <p>Settings</p>}
+          {extended && <p>Settings</p>}
         </div>
       </div>
     </div>
