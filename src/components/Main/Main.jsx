@@ -72,7 +72,6 @@ const Main = () => {
 
   const rows = resultData?.data || [];
   const resultMessage = resultData?.answer || "";
-  const totalCount = rows.length;
   const [viewMode, setViewMode] = useState("table");
 
   /* -------- TEXT → SPEECH -------- */
@@ -184,7 +183,7 @@ const Main = () => {
         {!showResult ? (
           <div className="greet">
             <p>
-              <span>Hello, Ramesh</span>
+              <span>Hello!</span>
             </p>
             <p>How can I help you today?</p>
           </div>
